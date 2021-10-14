@@ -18,7 +18,7 @@ public class GenericUDFNvl extends GenericUDF {
         }
 
         resolver = new GenericUDFUtils.ReturnObjectInspectorResolver(true);
-        if((!resolver.update(argumentOIs[0]) && resolver.update(argumentOIs[1]))){
+        if(!(resolver.update(argumentOIs[0]) && resolver.update(argumentOIs[1]))){
             throw new UDFArgumentTypeException(2, "both arg should be the same type");
         }
 
@@ -29,7 +29,8 @@ public class GenericUDFNvl extends GenericUDF {
         Object retval = resolver.convertIfNecessary(deferredObjects[0].get(), argumentOIs[0]);
         if(retval == null){
             System.out.println("retval is null");
-            resolver.convertIfNecessary(deferredObjects[1].get(),argumentOIs[1]);
+//            resolver.updateForUnionAll(argumentOIs[1]);
+            retval = resolver.convertIfNecessary(deferredObjects[1].get(),argumentOIs[1]);
         }
         return retval;
     }

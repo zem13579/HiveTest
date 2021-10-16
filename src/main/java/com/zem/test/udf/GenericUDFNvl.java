@@ -1,4 +1,4 @@
-package com.zem.test;
+package com.zem.test.udf;
 
 import org.apache.hadoop.hive.ql.exec.UDFArgumentException;
 import org.apache.hadoop.hive.ql.exec.UDFArgumentLengthException;

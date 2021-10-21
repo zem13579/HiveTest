@@ -1,3 +1,5 @@
+
+
 with tagedtable as (
     select
         t1.policy_no
@@ -79,8 +81,35 @@ with tagedtable as (
         end
     from dwd_ag_oper_policy_bacic_info_his_di t1
     left join dmgr_prod.v_ex_p10ids_riskcon t2
-    on t1.policy_no =t2.policyno
-    and t1.cvrg_cd = t2.classcode
-    and t2.pt='${v_dt}'
-    where t1.dt='99991231' --取有效分区数据
+    on      t1.policy_no =t2.policyno
+    and     t1.cvrg_cd = t2.classcode
+    and     t2.pt='${v_dt}'
+    where   t1.dt='99991231' --取有效分区数据
+
+    union all
+
+    --合并新增及更新数据
+    select *
+    from ${ods}.v_ex_p10ids_riskcon t1
+    left join ${cdm}.dim_pub_metacode_mapping_dd t2
+        on t1.aidtype =  t2.src_vale
+        and t2.dt = max_pt('${cdm}.dim_pub_metacode_mapping_dd')
+        and t2.valid_ind = '1'
+        and t2.src_project_name ='dmgr_prod'
+        and t2.src_talbe_name='v_ex_p10ids_riskcon'
+        and t2.src_column='aitype'
+        and t2.targ_table_name = 'dwd_ag_oper_policy_bacic_info_his_di'
+        and t2.targ_colum_name = 'appnt_id_type'
+    left join ${cdm}.dim_pub_metacode_mapping_dd t3
+              on t1.aidtype =  t2.src_vale
+                  and t2.dt = max_pt('${cdm}.dim_pub_metacode_mapping_dd')
+                  and t2.valid_ind = '1'
+                  and t2.src_project_name ='dmgr_prod'
+                  and t2.src_talbe_name='v_ex_p10ids_riskcon'
+                  and t2.src_column='itype'
+                  and t2.targ_table_name = 'dwd_ag_oper_policy_bacic_info_his_di'
+                  and t2.targ_colum_name = 'insured_id_type'
+    left join ${cdm}.tmp_split_policy3 t4
+        on t1.policy
+
 );

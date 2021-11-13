@@ -112,4 +112,4 @@ with tagedtable as (
     left join ${cdm}.tmp_split_policy3 t4
         on t1.policy
 
-);
+)
